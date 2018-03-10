@@ -1,0 +1,87 @@
+Set up Networking, attach LAN Cable
+#ping -c 5 8.8.8.8
+#iwconfig
+#wifi-menu -o wxxxxx
+Partition Hard Drive
+#lsblk
+#cfdisk 
+	(Delete all partitions, Make sda1 20GB Primary, sda2 4GB Primary, sda3 remainder Extended, sda5 on extended)
+#lsblk (to verify)
+Format the partitions
+#mkfs.ext4 /dev/sda1
+#mkfs.ext4 /dev/sda5
+#mkswap /dev/sda2
+#swapon /dev/sda2
+Mount the drives
+#mount /dev/sda1 /mnt
+#mkdir /mnt/home
+#mount /dev/sda5 /mnt/home
+Install the Arch Linux Base system
+#pacstrap /mnt base base-devel
+Create fstab
+#genfstab /mnt >> /mnt/etc/fstab
+Switch to and configure the installed system
+#arch-chroot /mnt /bin/bash
+#vi /etc/locale.gen (Uncomment US, GB and IN)
+#locale-gen
+#vi /etc/locale.conf (Add LANG=EN_us.utf-8)
+#ls /usr/share/zoneinfo/
+#ln -s /usr/share/zoneinfo/Asia/Kolkata /etc/localtime
+Set root password and hostname
+#passwd
+#vi /etc/hostname
+#systemctl enable dhcpcd
+Install Grub
+#pacman -S grub os-prober
+#grub-install /dev/sda
+#grub-mkconfig -o /boot/grub/grub.cfg
+Exit from chroot, unmount partitions and reboot
+#exit
+#umount mnt/home
+#umount /mnt
+#reboot
+After reboot, update your system
+#pacman -Syu
+#nano /etc/pacman.conf
+	Uncomment
+	[multilib]
+	Include = /etc/pacman.d/mirrorlist
+Create user
+#useradd -m -g users -G wheel,storage,power -s /bin/bash XX
+#passwd XX
+#pacman -S sudo
+#visudo
+	uncomment
+	%wheel ALL=(ALL) ALL
+
+#reboot
+
+
+
+Login as XX
+
+$systemctl enable dhcpcd
+$sudo pacman -S xf86-video-intel
+$sudo pacman -S xorg-server xorg-xinit xorg-twm xorg-xclock xterm
+$sudo pacman -S xfce4 xfce4-goodies
+$startxfce4
+$cp /etc/x11/xinit/xinitrc ~/.xinitrc
+$sudo nano ~/.xinitrc
+	
+	add “exec startxfce4” above twm & like below
+	
+	exec startxfce4
+ 	twm &
+ 	xclock -geometry 50x50-1+1 &
+ 	xterm -geometry 80x50+494+51 &
+ 	xterm - geometry 80x20+494-0 &
+ 	exec xterm -geometry 80x66+0+0 -name login
+
+$sudo cp ~/.xinitrc /root/.xinitrc
+$sudo reboot
+
+$sudo pacman -S networkmanager network-manager-applet
+$sudo systemctl enable NetworkManager
+$sudo 
+$sudo reboot 
+ 
