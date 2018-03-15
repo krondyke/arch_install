@@ -82,6 +82,6 @@ $sudo reboot
 
 $sudo pacman -S networkmanager network-manager-applet
 $sudo systemctl enable NetworkManager
-$sudo 
+$sudo pacman -S gnome-alsamixer
 $sudo reboot 
  
